@@ -6,7 +6,7 @@
 
 ## Pila Tecnológica
 
--   Java (21), Spring Boot
+-   Java (17), Spring Boot
 -   Spring Security (configurado para validación de JWT)
 
 ## Base de Datos
@@ -90,7 +90,7 @@ Los casos de prueba descritos para cada endpoint en esta guía sirven como la ba
 
 -   **Framework y Persistencia:** Utilizar Spring Boot con Spring Data JPA. Definir una entidad JPA (`@Entity`) `Customer` y un `CustomerRepository` que extienda de `JpaRepository` para interactuar con la base de datos.
 -   **DTOs (Data Transfer Objects):** Usar DTOs para el request (`CreateCustomerRequestDTO`) y la respuesta (`CustomerResponseDTO`) para desacoplar la API de las entidades de base de datos. Documentar estos DTOs en Swagger.
--   **Validación:** Aplicar validaciones estándar de Jakarta Bean Validation en el `CreateCustomerRequestDTO` (ej. `@NotBlank`, `@Past`, `@Pattern`, `@Size`).
+-   **Validación:** Aplicar validaciones estándar en el `CreateCustomerRequestDTO` (ej. `@NotBlank`, `@Past`, `@Pattern`, `@Size`).
 -   **Patrón Strategy:** Implementar un patrón Strategy para la validación de `numCTA` dependiente del país.
     -   Usar dentro del servicio (en la capa de aplicacion) una interfaz `CountryValidationStrategy` con un método `validate(Customer customer)`.
     -   Crear implementaciones como `ChileanValidationStrategy` (que verifica el prefijo '003') y `DefaultValidationStrategy` (que no realiza validaciones adicionales).
