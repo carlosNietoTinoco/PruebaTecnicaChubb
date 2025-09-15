@@ -35,6 +35,20 @@ Los casos de prueba descritos para cada endpoint en esta guía sirven como la ba
 
 -   Entidades como `Customer` (que contiene campos como customerId, name, birthDate, gender (enlazado a Catalog.Gender), numCta, status (enlazado a Catalog.Status), country (enlazado a Catalog.Country) y isActive).
 
+-   **Enumeraciones y Mapeo a Catálogos:** Se deben definir enums en el código de la aplicación para representar los valores de los catálogos. Esto proporciona seguridad de tipos y mejora la legibilidad. Cada enum se mapeará a su respectiva tabla de catálogo en la base de datos.
+
+    -   **Gender:**
+        -   **Enum:** `Gender { MALE, FEMALE }`
+        -   **Mapeo a DB:** `Catalog.Gender` (columnas: `id`, `name`)
+
+    -   **Status:**
+        -   **Enum:** `Status { ACTIVE, INACTIVE }`
+        -   **Mapeo a DB:** `Catalog.Status` (columnas: `id`, `name`)
+
+    -   **Country:**
+        -   **Enum:** `Country { COLOMBIA, CHILE, ARGENTINA, BRASIL, ECUADOR, MEXICO, PANAMA }`
+        -   **Mapeo a DB:** `Catalog.Country` (columnas: `id`, `name`)
+
 ## Adaptadores
 
 -   **Adaptadores de Entrada (Driving Adapters):**
@@ -320,7 +334,7 @@ Los casos de prueba descritos para cada endpoint en esta guía sirven como la ba
     1.  Buscar al cliente por su ID.
     2.  Verificar que su estado actual sea `ACTIVE`. Si no lo es, devolver un 409.
     3.  Cambiar el estado a `INACTIVE`.
-    4.  Registrar un Logs del cambio.
+    4.  Guarda inactivateDate, activateDate.
     5.  Guardar los cambios en la base de datos.
 
 **Pruebas:**
@@ -381,7 +395,7 @@ Los casos de prueba descritos para cada endpoint en esta guía sirven como la ba
     1.  Buscar al cliente por su ID.
     2.  Verificar que su estado actual sea `INACTIVE`. Si no lo es, devolver un 409.
     3.  Cambiar el estado a `ACTIVE`.
-    4.  Registrar un Logs del cambio.
+    4.  Guarda inactivateDate, activateDate.
     5.  Guardar los cambios en la base de datos.
 
 **Pruebas:**

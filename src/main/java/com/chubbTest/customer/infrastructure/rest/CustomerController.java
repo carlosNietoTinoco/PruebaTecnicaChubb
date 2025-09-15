@@ -1,4 +1,4 @@
-package com.chubbTest.customer.infrastructure;
+package com.chubbTest.customer.infrastructure.rest;
 
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
