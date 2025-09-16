@@ -14,13 +14,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.chubbTest.customer.TestSecurityConfig;
 import com.chubbTest.customer.infrastructure.config.spring.CustomerApplication;
 
+import jakarta.transaction.Transactional;
+
 @Disabled("Desactivado temporalmente para pruebas")
 @SpringBootTest(classes = CustomerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestSecurityConfig.class)
+@Transactional
+@Sql(scripts = "classpath:test-data-customer.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 public class CustomerControllerIntegrationTest {
 
     @Autowired
@@ -181,7 +186,7 @@ public class CustomerControllerIntegrationTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}", HttpMethod.PATCH, entity, String.class, "id_cliente_inactivo");
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}", HttpMethod.PATCH, entity, String.class, "a1b2c3d4-e5f6-7890-1234-567890abcdef");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(response.getBody()).contains("no está activo");
@@ -210,7 +215,7 @@ public class CustomerControllerIntegrationTest {
     @Test
     @WithMockUser
     public void testDeactivateCustomer_Success() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/deactivate", HttpMethod.PATCH, null, String.class, "id_cliente_activo");
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/deactivate", HttpMethod.PATCH, null, String.class, "e1f2a3b4-c5d6-7890-abcd-ef1234567890");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -218,7 +223,7 @@ public class CustomerControllerIntegrationTest {
     @Test
     @WithMockUser
     public void testDeactivateCustomer_Fail_AlreadyInactive() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/deactivate", HttpMethod.PATCH, null, String.class, "id_cliente_ya_inactivo");
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/deactivate", HttpMethod.PATCH, null, String.class, "b2c3d4e5-f678-9012-3456-7890abcdef12");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(response.getBody()).contains("ya se encuentra inactivo");
@@ -238,7 +243,7 @@ public class CustomerControllerIntegrationTest {
     @Test
     @WithMockUser
     public void testActivateCustomer_Success() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/activate", HttpMethod.PATCH, null, String.class, "id_cliente_inactivo");
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/activate", HttpMethod.PATCH, null, String.class, "a1b2c3d4-e5f6-7890-1234-567890abcdef");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
@@ -246,7 +251,7 @@ public class CustomerControllerIntegrationTest {
     @Test
     @WithMockUser
     public void testActivateCustomer_Fail_AlreadyActive() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/activate", HttpMethod.PATCH, null, String.class, "id_cliente_ya_activo");
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/activate", HttpMethod.PATCH, null, String.class, "c3d4e5f6-7890-1234-5678-90abcdef1234");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(response.getBody()).contains("ya se encuentra activo");

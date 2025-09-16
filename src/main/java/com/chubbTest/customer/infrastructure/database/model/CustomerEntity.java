@@ -20,7 +20,6 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "customer", indexes = {
-    @Index(name = "idx_customer_num_cta", columnList = "num_cta"),
     @Index(name = "idx_customer_status", columnList = "status_id"),
     @Index(name = "idx_customer_country", columnList = "country_id")
 })

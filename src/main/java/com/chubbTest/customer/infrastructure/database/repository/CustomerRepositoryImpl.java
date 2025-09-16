@@ -24,9 +24,16 @@ public class CustomerRepositoryImpl implements CustomerRepository {
 
     @Override
     public Customer save(Customer customer) {
-        CustomerEntity entity = mapper.toEntity(customer);
-        CustomerEntity savedEntity = jpaRepository.save(entity);
-        return mapper.toDomain(savedEntity);
+        CustomerEntity existingEntity = jpaRepository.findById(customer.getCustomerId()).orElse(null);
+        if (existingEntity == null) {
+            CustomerEntity newEntity = mapper.toEntity(customer);
+            CustomerEntity savedEntity = jpaRepository.save(newEntity);
+            return mapper.toDomain(savedEntity);
+        } else {
+            existingEntity = mapper.updateEntityFromDomain(customer, existingEntity);
+            CustomerEntity savedEntity = jpaRepository.save(existingEntity);
+            return mapper.toDomain(savedEntity);
+        }
     }
 
     @Override

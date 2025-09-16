@@ -63,12 +63,29 @@ public class CustomerService {
 
     @Transactional
     public Customer deactivateCustomer(UUID customerId) {
+        System.out.println("***************************************");
+        System.out.println("***************************************");
+        System.out.println("Pasa por Services con Id: " + customerId);
         Customer customer = findCustomerById(customerId);
+
+        System.out.println("***************************************");
+        System.out.println("Objeto recuperado: " + customer);
+        System.out.println("***************************************");
+
         if (customer.getStatus() != Status.ACTIVE) {
             throw new CustomerStatusConflictException("El cliente con ID " + customerId + " ya se encuentra inactivo.");
         }
 
         setCustomerStatusAndDates(customer, Status.INACTIVE, LocalDateTime.now());
+
+        System.out.println("***************************************");
+        System.out.println("Objeto modificado: " + customer);
+        System.out.println("***************************************");
+
+
+        System.out.println("finaliza Services antes de guardar con Id: " + customerId);
+        System.out.println("***************************************");
+        System.out.println("***************************************");
 
         return customerRepository.save(customer);
     }

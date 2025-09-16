@@ -46,18 +46,18 @@ CREATE TABLE customer (
 );
 
 -- Create indexes for better performance
-CREATE INDEX idx_customer_num_cta ON customer(num_cta);
 CREATE INDEX idx_customer_status ON customer(status_id);
 CREATE INDEX idx_customer_country ON customer(country_id);
 
 -- Insert initial catalog data
-INSERT INTO gender (name) VALUES ('MALE'), ('FEMALE');
-INSERT INTO status (name) VALUES ('ACTIVE'), ('INACTIVE');
-INSERT INTO country (name) VALUES
-    ('COLOMBIA'),
-    ('CHILE'),
-    ('ARGENTINA'),
-    ('BRASIL'),
-    ('ECUADOR'),
-    ('MEXICO'),
-    ('PANAMA');
+INSERT INTO gender (id, name) VALUES (1, 'MALE');
+INSERT INTO gender (id, name) VALUES (2, 'FEMALE');
+INSERT INTO status (id, name) VALUES (1, 'ACTIVE');
+INSERT INTO status (id, name) VALUES (2, 'INACTIVE');
+INSERT INTO country (id, name) VALUES (1, 'COLOMBIA');
+INSERT INTO country (id, name) VALUES (2, 'CHILE');
+INSERT INTO country (id, name) VALUES (3, 'ARGENTINA');
+INSERT INTO country (id, name) VALUES (4, 'BRAZIL');
+INSERT INTO country (id, name) VALUES (5, 'ECUADOR');
+INSERT INTO country (id, name) VALUES (6, 'MEXICO');
+INSERT INTO country (id, name) VALUES (7, 'PANAMA');
