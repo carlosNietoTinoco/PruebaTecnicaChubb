@@ -1,7 +1,5 @@
 package com.chubbTest.customer.infrastructure.database.repository;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,25 +7,36 @@ import org.springframework.stereotype.Repository;
 
 import com.chubbTest.customer.application.repository.CustomerRepository;
 import com.chubbTest.customer.domain.Customer;
+import com.chubbTest.customer.infrastructure.database.mapper.CustomerEntityMapper;
+import com.chubbTest.customer.infrastructure.database.model.CustomerEntity;
+import com.chubbTest.customer.infrastructure.database.repository.jpa.CustomerJpaRepository;
 
 @Repository
 public class CustomerRepositoryImpl implements CustomerRepository {
 
-    private final Map<UUID, Customer> customerStore = new HashMap<>();
+    private final CustomerJpaRepository jpaRepository;
+    private final CustomerEntityMapper mapper;
+
+    public CustomerRepositoryImpl(CustomerJpaRepository jpaRepository, CustomerEntityMapper mapper) {
+        this.jpaRepository = jpaRepository;
+        this.mapper = mapper;
+    }
 
     @Override
     public Customer save(Customer customer) {
-        customerStore.put(customer.getCustomerId(), customer);
-        return customer;
+        CustomerEntity entity = mapper.toEntity(customer);
+        CustomerEntity savedEntity = jpaRepository.save(entity);
+        return mapper.toDomain(savedEntity);
     }
 
     @Override
     public Optional<Customer> findById(UUID customerId) {
-        return Optional.ofNullable(customerStore.get(customerId));
+        Optional<CustomerEntity> entityOptional = jpaRepository.findById(customerId);
+        return entityOptional.map(mapper::toDomain);
     }
 
     @Override
     public boolean existsById(UUID customerId) {
-        return customerStore.containsKey(customerId);
+        return jpaRepository.existsById(customerId);
     }
 }
