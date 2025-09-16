@@ -1,39 +1,41 @@
 package com.chubbTest.customer.infrastructure;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.context.annotation.Import;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.chubbTest.customer.TestSecurityConfig;
 import com.chubbTest.customer.infrastructure.config.spring.CustomerApplication;
 
 import jakarta.transaction.Transactional;
 
-@SpringBootTest(classes = CustomerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = CustomerApplication.class)
+@AutoConfigureMockMvc
 @Import(TestSecurityConfig.class)
 @Transactional
 @Sql(scripts = "classpath:test-data-customer.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 public class CustomerControllerIntegrationTest {
 
     @Autowired
-    private TestRestTemplate restTemplate;
+    MockMvc mockMvc;
+
 
     // 1.1 Create Customer Tests
 
     @Test
-    @WithMockUser
-    public void testCreateCustomer_Success_Colombia_Active() {
+    @WithMockUser(authorities = "SCOPE_customers:write")
+    void testCreateCustomer_Success_Colombia_Active() throws Exception {
         String requestJson = """
             {
               "name": "Juan Pérez",
@@ -45,19 +47,15 @@ public class CustomerControllerIntegrationTest {
             }
             """;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers", HttpMethod.POST, entity, String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        // Assert body contains expected fields
+        mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isCreated());
     }
 
     @Test
-    @WithMockUser
-    public void testCreateCustomer_Success_Chile_Inactive() {
+    @WithMockUser(authorities = "SCOPE_customers:write")
+    void testCreateCustomer_Success_Chile_Inactive() throws Exception {
         String requestJson = """
             {
               "name": "Ana Silva",
@@ -69,18 +67,15 @@ public class CustomerControllerIntegrationTest {
             }
             """;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers", HttpMethod.POST, entity, String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isCreated());
     }
 
     @Test
-    @WithMockUser
-    public void testCreateCustomer_Fail_InvalidStatus() {
+    @WithMockUser(authorities = "SCOPE_customers:write")
+    void testCreateCustomer_Fail_InvalidStatus() throws Exception {
         String requestJson = """
             {
               "name": "Usuario de Prueba",
@@ -92,19 +87,16 @@ public class CustomerControllerIntegrationTest {
             }
             """;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers", HttpMethod.POST, entity, String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).contains("PENDING");
+        mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("PENDING")));
     }
 
     @Test
-    @WithMockUser
-    public void testCreateCustomer_Fail_BirthDateOutOfRange() {
+    @WithMockUser(authorities = "SCOPE_customers:write")
+    void testCreateCustomer_Fail_BirthDateOutOfRange() throws Exception {
         String requestJson = """
             {
               "name": "Pedro",
@@ -116,19 +108,16 @@ public class CustomerControllerIntegrationTest {
             }
             """;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers", HttpMethod.POST, entity, String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).contains("1990-01-01");
+        mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("1990-01-01")));
     }
 
     @Test
-    @WithMockUser
-    public void testCreateCustomer_Fail_NumCTA_Chile_Invalid() {
+    @WithMockUser(authorities = "SCOPE_customers:write")
+    void testCreateCustomer_Fail_NumCTA_Chile_Invalid() throws Exception {
         String requestJson = """
             {
               "name": "Carlos Rojas",
@@ -140,21 +129,18 @@ public class CustomerControllerIntegrationTest {
             }
             """;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers", HttpMethod.POST, entity, String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).contains("003");
+        mockMvc.perform(post("/api/v1/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(containsString("003")));
     }
 
     // 1.2 Update Customer Tests
 
     @Test
-    @WithMockUser
-    public void testUpdateCustomer_Success() {
+    @WithMockUser(authorities = "SCOPE_customers:update")
+    void testUpdateCustomer_Success() throws Exception {
         String requestJson = """
             {
               "name": "Juan Pérez Actualizado",
@@ -162,37 +148,33 @@ public class CustomerControllerIntegrationTest {
             }
             """;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/d4a7f8b1-9c3e-4a5d-b1e2-f3c4d5a6b7c8", HttpMethod.PATCH, entity, String.class);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        mockMvc.perform(patch("/api/v1/customers/d4a7f8b1-9c3e-4a5d-b1e2-f3c4d5a6b7c8")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser
-    public void testUpdateCustomer_Fail_Inactive() {
+    @WithMockUser(authorities = "SCOPE_customers:update")
+    void testUpdateCustomer_Fail_Inactive() throws Exception {
         String requestJson = """
             {
               "name": "Juan Pérez Intento de actualización"
             }
             """;
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
+        String customerId = "f1a2b3c4-d5e6-f789-0123-456789abcdef";
 
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}", HttpMethod.PATCH, entity, String.class, "f1a2b3c4-d5e6-f789-0123-456789abcdef");
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(response.getBody()).contains("no está activo");
+        mockMvc.perform(patch("/api/v1/customers/{id}", customerId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isConflict())
+                .andExpect(content().string(containsString("no está activo")));
     }
 
     @Test
-    @WithMockUser
-    public void testUpdateCustomer_Fail_NotFound() {
+    @WithMockUser(authorities = "SCOPE_customers:update")
+    void testUpdateCustomer_Fail_NotFound() throws Exception {
         String requestJson = """
             {
               "name": "Test"
@@ -201,74 +183,65 @@ public class CustomerControllerIntegrationTest {
 
         String nonExistentId = "11111111-1111-1111-1111-111111111111";
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
-
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}", HttpMethod.PATCH, entity, String.class, nonExistentId);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        mockMvc.perform(patch("/api/v1/customers/{id}", nonExistentId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson))
+                .andExpect(status().isNotFound());
     }
 
     // 1.3 Deactivate Customer Tests
 
     @Test
-    @WithMockUser
-    public void testDeactivateCustomer_Success() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/deactivate", HttpMethod.PATCH, null, String.class, "e1f2a3b4-c5d6-7890-abcd-ef1234567890");
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    @WithMockUser(authorities = "SCOPE_customers:deactivate")
+    void testDeactivateCustomer_Success() throws Exception {
+        mockMvc.perform(patch("/api/v1/customers/{id}/deactivate", "e1f2a3b4-c5d6-7890-abcd-ef1234567890"))
+                .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser
-    public void testDeactivateCustomer_Fail_AlreadyInactive() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/deactivate", HttpMethod.PATCH, null, String.class, "b2c3d4e5-f678-9012-3456-7890abcdef12");
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(response.getBody()).contains("ya se encuentra inactivo");
+    @WithMockUser(authorities = "SCOPE_customers:deactivate")
+    void testDeactivateCustomer_Fail_AlreadyInactive() throws Exception {
+        mockMvc.perform(patch("/api/v1/customers/{id}/deactivate", "b2c3d4e5-f678-9012-3456-7890abcdef12"))
+                .andExpect(status().isConflict())
+                .andExpect(content().string(containsString("ya se encuentra inactivo")));
     }
 
     @Test
-    @WithMockUser
-    public void testDeactivateCustomer_Fail_NotFound() {
+    @WithMockUser(authorities = "SCOPE_customers:deactivate")
+    void testDeactivateCustomer_Fail_NotFound() throws Exception {
 
         String nonExistentId = "11111111-1111-1111-1111-111111111111";
 
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/deactivate", HttpMethod.PATCH, null, String.class, nonExistentId);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).contains("No se encontró el cliente");
+        mockMvc.perform(patch("/api/v1/customers/{id}/deactivate", nonExistentId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("No se encontró el cliente")));
     }
 
     // 1.4 Activate Customer Tests
 
     @Test
-    @WithMockUser
-    public void testActivateCustomer_Success() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/activate", HttpMethod.PATCH, null, String.class, "a1b2c3d4-e5f6-7890-1234-567890abcdef");
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    @WithMockUser(authorities = "SCOPE_customers:activate")
+    void testActivateCustomer_Success() throws Exception {
+        mockMvc.perform(patch("/api/v1/customers/{id}/activate", "a1b2c3d4-e5f6-7890-1234-567890abcdef"))
+                .andExpect(status().isOk());
     }
 
     @Test
-    @WithMockUser
-    public void testActivateCustomer_Fail_AlreadyActive() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/activate", HttpMethod.PATCH, null, String.class, "c3d4e5f6-7890-1234-5678-90abcdef1234");
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
-        assertThat(response.getBody()).contains("ya se encuentra activo");
+    @WithMockUser(authorities = "SCOPE_customers:activate")
+    void testActivateCustomer_Fail_AlreadyActive() throws Exception {
+        mockMvc.perform(patch("/api/v1/customers/{id}/activate", "c3d4e5f6-7890-1234-5678-90abcdef1234"))
+                .andExpect(status().isConflict())
+                .andExpect(content().string(containsString("ya se encuentra activo")));
     }
 
     @Test
-    @WithMockUser
-    public void testActivateCustomer_Fail_NotFound() {
+    @WithMockUser(authorities = "SCOPE_customers:activate")
+    void testActivateCustomer_Fail_NotFound() throws Exception {
 
         String nonExistentId = "11111111-1111-1111-1111-111111111111";
 
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/activate", HttpMethod.PATCH, null, String.class, nonExistentId);
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        assertThat(response.getBody()).contains("No se encontró el cliente");
+        mockMvc.perform(patch("/api/v1/customers/{id}/activate", nonExistentId))
+                .andExpect(status().isNotFound())
+                .andExpect(content().string(containsString("No se encontró el cliente")));
     }
 }
