@@ -18,7 +18,7 @@ import com.chubbTest.customer.domain.enums.Country;
 import com.chubbTest.customer.domain.enums.Gender;
 import com.chubbTest.customer.domain.enums.Status;
 import com.chubbTest.customer.domain.exception.CustomerNotFoundException;
-import com.chubbTest.customer.domain.exception.InvalidDataException;
+import com.chubbTest.customer.domain.exception.InvalidCustomerDataException;
 
 class CustomerServiceTest {
 
@@ -147,7 +147,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.createCustomer(customer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: El nombre no puede exceder 255 caracteres.");
     }
 
@@ -168,7 +168,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.updateCustomer(customerId, partialCustomer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: El nombre no puede exceder 255 caracteres.");
     }
 
@@ -190,7 +190,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.createCustomer(customer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: La fecha de nacimiento 'birthDate' debe ser igual o posterior a 1990-01-01.");
     }
 
@@ -211,7 +211,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.updateCustomer(customerId, partialCustomer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: La fecha de nacimiento 'birthDate' debe ser igual o posterior a 1990-01-01.");
     }
 
@@ -233,7 +233,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.createCustomer(customer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: El 'numCTA' debe tener entre 12 y 15 caracteres.");
     }
 
@@ -253,7 +253,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.createCustomer(customer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: El 'numCTA' debe tener entre 12 y 15 caracteres.");
     }
 
@@ -273,7 +273,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.createCustomer(customer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: El 'numCTA' debe contener solo números.");
     }
 
@@ -294,7 +294,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.updateCustomer(customerId, partialCustomer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: El 'numCTA' debe tener entre 12 y 15 caracteres.");
     }
 
@@ -315,7 +315,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.updateCustomer(customerId, partialCustomer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: El 'numCTA' debe tener entre 12 y 15 caracteres.");
     }
 
@@ -336,7 +336,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.updateCustomer(customerId, partialCustomer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: El 'numCTA' debe contener solo números.");
     }
 
@@ -358,7 +358,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.createCustomer(customer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: Para el país CHILE, el 'numCTA' debe comenzar con '003'.");
     }
 
@@ -380,7 +380,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.updateCustomer(customerId, partialCustomer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: Para el país CHILE, el 'numCTA' debe comenzar con '003'.");
     }
 
@@ -401,7 +401,7 @@ class CustomerServiceTest {
 
         // Act & Assert
         assertThatThrownBy(() -> service.updateCustomer(customerId, partialCustomer))
-                .isInstanceOf(InvalidDataException.class)
+                .isInstanceOf(InvalidCustomerDataException.class)
                 .hasMessage("Error de validación: Para el país CHILE, el 'numCTA' debe comenzar con '003'.");
     }
 

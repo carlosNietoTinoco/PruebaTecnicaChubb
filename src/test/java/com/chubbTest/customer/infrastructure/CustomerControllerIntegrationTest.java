@@ -1,7 +1,6 @@
 package com.chubbTest.customer.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +20,6 @@ import com.chubbTest.customer.infrastructure.config.spring.CustomerApplication;
 
 import jakarta.transaction.Transactional;
 
-@Disabled("Desactivado temporalmente para pruebas")
 @SpringBootTest(classes = CustomerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestSecurityConfig.class)
 @Transactional
@@ -186,7 +184,7 @@ public class CustomerControllerIntegrationTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}", HttpMethod.PATCH, entity, String.class, "a1b2c3d4-e5f6-7890-1234-567890abcdef");
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}", HttpMethod.PATCH, entity, String.class, "f1a2b3c4-d5e6-f789-0123-456789abcdef");
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
         assertThat(response.getBody()).contains("no está activo");
@@ -201,11 +199,13 @@ public class CustomerControllerIntegrationTest {
             }
             """;
 
+        String nonExistentId = "11111111-1111-1111-1111-111111111111";
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
 
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/id-inexistente", HttpMethod.PATCH, entity, String.class);
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}", HttpMethod.PATCH, entity, String.class, nonExistentId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
@@ -232,7 +232,10 @@ public class CustomerControllerIntegrationTest {
     @Test
     @WithMockUser
     public void testDeactivateCustomer_Fail_NotFound() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/id-inexistente/deactivate", HttpMethod.PATCH, null, String.class);
+
+        String nonExistentId = "11111111-1111-1111-1111-111111111111";
+
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/deactivate", HttpMethod.PATCH, null, String.class, nonExistentId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).contains("No se encontró el cliente");
@@ -260,7 +263,10 @@ public class CustomerControllerIntegrationTest {
     @Test
     @WithMockUser
     public void testActivateCustomer_Fail_NotFound() {
-        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/id-inexistente/activate", HttpMethod.PATCH, null, String.class);
+
+        String nonExistentId = "11111111-1111-1111-1111-111111111111";
+
+        ResponseEntity<String> response = restTemplate.exchange("/api/v1/customers/{id}/activate", HttpMethod.PATCH, null, String.class, nonExistentId);
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
         assertThat(response.getBody()).contains("No se encontró el cliente");

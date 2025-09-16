@@ -14,7 +14,7 @@ import com.chubbTest.customer.domain.enums.Country;
 import com.chubbTest.customer.domain.enums.Status;
 import com.chubbTest.customer.domain.exception.CustomerNotFoundException;
 import com.chubbTest.customer.domain.exception.CustomerStatusConflictException;
-import com.chubbTest.customer.domain.exception.InvalidDataException;
+import com.chubbTest.customer.domain.exception.InvalidCustomerDataException;
 
 @Service
 public class CustomerService {
@@ -63,29 +63,14 @@ public class CustomerService {
 
     @Transactional
     public Customer deactivateCustomer(UUID customerId) {
-        System.out.println("***************************************");
-        System.out.println("***************************************");
-        System.out.println("Pasa por Services con Id: " + customerId);
+        
         Customer customer = findCustomerById(customerId);
-
-        System.out.println("***************************************");
-        System.out.println("Objeto recuperado: " + customer);
-        System.out.println("***************************************");
 
         if (customer.getStatus() != Status.ACTIVE) {
             throw new CustomerStatusConflictException("El cliente con ID " + customerId + " ya se encuentra inactivo.");
         }
 
         setCustomerStatusAndDates(customer, Status.INACTIVE, LocalDateTime.now());
-
-        System.out.println("***************************************");
-        System.out.println("Objeto modificado: " + customer);
-        System.out.println("***************************************");
-
-
-        System.out.println("finaliza Services antes de guardar con Id: " + customerId);
-        System.out.println("***************************************");
-        System.out.println("***************************************");
 
         return customerRepository.save(customer);
     }
@@ -118,36 +103,36 @@ public class CustomerService {
         String numCTAToValidate = partialCustomer.getNumCTA() != null ? partialCustomer.getNumCTA() : existingCustomer.getNumCTA();
 
         if (countryToValidate == Country.CHILE && numCTAToValidate != null && !numCTAToValidate.startsWith("003")) {
-            throw new InvalidDataException("Error de validación: Para el país CHILE, el 'numCTA' debe comenzar con '003'.");
+            throw new InvalidCustomerDataException("Error de validación: Para el país CHILE, el 'numCTA' debe comenzar con '003'.");
         }
     }
 
     private void validateName(Customer customer) {
         if (customer.getName() != null && customer.getName().length() > 255) {
-            throw new InvalidDataException("Error de validación: El nombre no puede exceder 255 caracteres.");
+            throw new InvalidCustomerDataException("Error de validación: El nombre no puede exceder 255 caracteres.");
         }
     }
 
     private void validateBirthDate(Customer customer) {
         if (customer.getBirthDate() != null && customer.getBirthDate().isBefore(LocalDate.of(1990, 1, 1))) {
-            throw new InvalidDataException("Error de validación: La fecha de nacimiento 'birthDate' debe ser igual o posterior a 1990-01-01.");
+            throw new InvalidCustomerDataException("Error de validación: La fecha de nacimiento 'birthDate' debe ser igual o posterior a 1990-01-01.");
         }
     }
 
     private void validateNumCTA(Customer customer) {
         if (customer.getNumCTA() != null) {
             if (customer.getNumCTA().length() < 12 || customer.getNumCTA().length() > 15) {
-                throw new InvalidDataException("Error de validación: El 'numCTA' debe tener entre 12 y 15 caracteres.");
+                throw new InvalidCustomerDataException("Error de validación: El 'numCTA' debe tener entre 12 y 15 caracteres.");
             }
             if (!customer.getNumCTA().matches("\\d+")) {
-                throw new InvalidDataException("Error de validación: El 'numCTA' debe contener solo números.");
+                throw new InvalidCustomerDataException("Error de validación: El 'numCTA' debe contener solo números.");
             }
         }
     }
 
     private void validateCountrySpecificRules(Customer customer) {
         if (customer.getCountry() == Country.CHILE && customer.getNumCTA() != null && !customer.getNumCTA().startsWith("003")) {
-            throw new InvalidDataException("Error de validación: Para el país CHILE, el 'numCTA' debe comenzar con '003'.");
+            throw new InvalidCustomerDataException("Error de validación: Para el país CHILE, el 'numCTA' debe comenzar con '003'.");
         }
     }
 
