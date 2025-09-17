@@ -13,6 +13,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.chubbTest.customer.application.repository.CustomerRepository;
+import com.chubbTest.customer.application.validation.factory.ValidationStrategyFactory;
+import com.chubbTest.customer.application.validation.strategy.CountryValidationStrategy;
+import com.chubbTest.customer.application.validation.strategy.impl.ChileValidationStrategy;
 import com.chubbTest.customer.domain.Customer;
 import com.chubbTest.customer.domain.enums.Country;
 import com.chubbTest.customer.domain.enums.Gender;
@@ -28,7 +31,8 @@ class CustomerServiceTest {
     void createCustomer_shouldSetStatusActiveAndActivateDate() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         Customer customer = new Customer();
         customer.setName("Carlos");
@@ -56,7 +60,8 @@ class CustomerServiceTest {
     void updateCustomer_shouldUpdateFieldsSuccessfully() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Old Name", LocalDate.of(1990, 1, 1),
@@ -85,7 +90,8 @@ class CustomerServiceTest {
     void deactivateCustomer_shouldDeactivateActiveCustomer() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Test", LocalDate.of(1990, 1, 1),
@@ -109,7 +115,8 @@ class CustomerServiceTest {
     void activateCustomer_shouldActivateInactiveCustomer() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Test", LocalDate.of(1990, 1, 1),
@@ -135,7 +142,8 @@ class CustomerServiceTest {
     void createCustomer_withNameLongerThan255Characters_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         Customer customer = new Customer();
         customer.setName("A".repeat(256)); // 256 characters
@@ -155,7 +163,8 @@ class CustomerServiceTest {
     void updateCustomer_withNameLongerThan255Characters_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Old Name", LocalDate.of(1990, 1, 1),
@@ -178,7 +187,8 @@ class CustomerServiceTest {
     void createCustomer_withBirthdayBefore1900_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         Customer customer = new Customer();
         customer.setName("Carlos");
@@ -198,7 +208,8 @@ class CustomerServiceTest {
     void updateCustomer_withBirthdayBefore1900_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Old Name", LocalDate.of(1990, 1, 1),
@@ -221,7 +232,8 @@ class CustomerServiceTest {
     void createCustomer_withNumCTALessThan12Digits_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         Customer customer = new Customer();
         customer.setName("Carlos");
@@ -241,7 +253,8 @@ class CustomerServiceTest {
     void createCustomer_withNumCTAMoreThan15Digits_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         Customer customer = new Customer();
         customer.setName("Carlos");
@@ -261,7 +274,8 @@ class CustomerServiceTest {
     void createCustomer_withNumCTAContainingLetters_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         Customer customer = new Customer();
         customer.setName("Carlos");
@@ -281,7 +295,8 @@ class CustomerServiceTest {
     void updateCustomer_withNumCTALessThan12Digits_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Old Name", LocalDate.of(1990, 1, 1),
@@ -302,7 +317,8 @@ class CustomerServiceTest {
     void updateCustomer_withNumCTAMoreThan15Digits_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Old Name", LocalDate.of(1990, 1, 1),
@@ -323,7 +339,8 @@ class CustomerServiceTest {
     void updateCustomer_withNumCTAContainingLetters_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Old Name", LocalDate.of(1990, 1, 1),
@@ -346,8 +363,13 @@ class CustomerServiceTest {
     void createCustomer_withChileCountryAndNumCTANotStartingWith003_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
+        CountryValidationStrategy chileStrategy = new ChileValidationStrategy();
+
+        when(validationStrategyFactoryMock.getStrategy(Country.CHILE)).thenReturn(Optional.of(chileStrategy));
+        
         Customer customer = new Customer();
         customer.setName("Carlos");
         customer.setBirthDate(LocalDate.of(1990, 5, 15));
@@ -366,7 +388,8 @@ class CustomerServiceTest {
     void updateCustomer_changingToChileCountryWithNumCTANotStartingWith003_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Old Name", LocalDate.of(1990, 1, 1),
@@ -388,7 +411,8 @@ class CustomerServiceTest {
     void updateCustomer_alreadyChileCountryUpdatingNumCTANotStartingWith003_shouldThrowInvalidDataException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID customerId = UUID.randomUUID();
         Customer existingCustomer = new Customer(customerId, "Old Name", LocalDate.of(1990, 1, 1),
@@ -411,7 +435,8 @@ class CustomerServiceTest {
     void updateCustomer_withNonExistentId_shouldThrowCustomerNotFoundException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID nonExistentId = UUID.randomUUID();
         Customer partialCustomer = new Customer();
@@ -429,7 +454,8 @@ class CustomerServiceTest {
     void activateCustomer_withNonExistentId_shouldThrowCustomerNotFoundException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID nonExistentId = UUID.randomUUID();
 
@@ -445,7 +471,8 @@ class CustomerServiceTest {
     void deactivateCustomer_withNonExistentId_shouldThrowCustomerNotFoundException() {
         // Arrange
         CustomerRepository repositoryMock = mock(CustomerRepository.class);
-        CustomerService service = new CustomerService(repositoryMock);
+        ValidationStrategyFactory validationStrategyFactoryMock = mock(ValidationStrategyFactory.class);
+        CustomerService service = new CustomerService(repositoryMock, validationStrategyFactoryMock);
 
         UUID nonExistentId = UUID.randomUUID();
 
