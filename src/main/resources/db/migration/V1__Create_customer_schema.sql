@@ -32,7 +32,7 @@ CREATE TABLE customer (
     name VARCHAR(255) NOT NULL,
     birth_date DATE NOT NULL,
     gender_id BIGINT NOT NULL,
-    num_cta VARCHAR(15) NOT NULL UNIQUE,
+    num_cta VARCHAR(15) NOT NULL,
     status_id BIGINT NOT NULL,
     country_id BIGINT NOT NULL,
     activate_date TIMESTAMP,

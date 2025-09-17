@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  customer-service:
+    build: .
+    container_name: customer-service
+    ports:
+      - "56790:8080"
+

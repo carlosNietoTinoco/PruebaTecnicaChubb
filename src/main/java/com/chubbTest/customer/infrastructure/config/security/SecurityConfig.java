@@ -25,16 +25,6 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
-            .exceptionHandling(exceptions -> exceptions
-                //401
-                .authenticationEntryPoint((request, response, authException) -> 
-                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
-                )
-                //403
-                .accessDeniedHandler((request, response, accessDeniedException) -> 
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN)
-                )
-            )
             .authorizeHttpRequests(auth -> auth
                 // Permisos para la consola H2 y documentación de la API (si la hubiera)
                 .requestMatchers("/h2-console/**").permitAll()

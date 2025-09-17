@@ -40,7 +40,7 @@ public class CustomerEntity {
     @JoinColumn(name = "gender_id", nullable = false, foreignKey = @ForeignKey(name = "fk_customer_gender"))
     private GenderEntity gender;
 
-    @Column(name = "num_cta", nullable = false, length = 15, unique = true)
+    @Column(name = "num_cta", nullable = false, length = 15)
     private String numCTA;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

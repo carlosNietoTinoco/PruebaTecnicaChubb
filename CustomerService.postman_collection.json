@@ -1,0 +1,218 @@
+{
+  "info": {
+    "name": "Customer Service API",
+    "_postman_id": "c4b1e6b2-8f4d-4f3c-8a4b-9a2d1b567890",
+    "description": "Colección para probar el API de Customer Service con JWT",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Crear Customer 1 (Activo)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLXRlc3Qtd3JpdGVyIiwic2NvcGUiOiJjdXN0b21lcnM6d3JpdGUgY3VzdG9tZXJzOnJlYWQgY3VzdG9tZXJzOnVwZGF0ZSBjdXN0b21lcnM6ZGVhY3RpdmF0ZSBjdXN0b21lcnM6YWN0aXZhdGUiLCJpYXQiOjE2NzI1MzEyMDAsImV4cCI6MjMwMzIyMjQwMH0.Wab16rWdBkU_lh9ui9IomWlosxfSR9i-BuYDpIVyCOs",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Juan Pérez\",\n  \"birthDate\": \"1995-08-20\",\n  \"gender\": \"MALE\",\n  \"numCTA\": \"1234567899990\",\n  \"country\": \"COLOMBIA\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:56790/api/v1/customers",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "56790",
+          "path": ["api", "v1", "customers"]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var json = pm.response.json();",
+              "pm.collectionVariables.set(\"customer1_id\", json.customerId);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear Customer 2 (Activo)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLXRlc3Qtd3JpdGVyIiwic2NvcGUiOiJjdXN0b21lcnM6d3JpdGUgY3VzdG9tZXJzOnJlYWQgY3VzdG9tZXJzOnVwZGF0ZSBjdXN0b21lcnM6ZGVhY3RpdmF0ZSBjdXN0b21lcnM6YWN0aXZhdGUiLCJpYXQiOjE2NzI1MzEyMDAsImV4cCI6MjMwMzIyMjQwMH0.Wab16rWdBkU_lh9ui9IomWlosxfSR9i-BuYDpIVyCOs",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Ana López\",\n  \"birthDate\": \"1990-05-10\",\n  \"gender\": \"FEMALE\",\n  \"numCTA\": \"222333444555\",\n  \"country\": \"COLOMBIA\",\n  \"status\": \"ACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:56790/api/v1/customers",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "56790",
+          "path": ["api", "v1", "customers"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var json = pm.response.json();",
+              "pm.collectionVariables.set(\"customer2_id\", json.customerId);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear Customer 3 (Inactivo)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLXRlc3Qtd3JpdGVyIiwic2NvcGUiOiJjdXN0b21lcnM6d3JpdGUgY3VzdG9tZXJzOnJlYWQiLCJpYXQiOjE2NzI1MzEyMDAsImV4cCI6MjMwMzIyMjQwMH0.bFDXKVRw6NYR8xzkL89aWVn46RcULPg9_SLxWFP1HXo",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Luis Gómez\",\n  \"birthDate\": \"1998-11-11\",\n  \"gender\": \"MALE\",\n  \"numCTA\": \"987654321000\",\n  \"country\": \"COLOMBIA\",\n  \"status\": \"INACTIVE\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:56790/api/v1/customers",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "56790",
+          "path": ["api", "v1", "customers"]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var json = pm.response.json();",
+              "pm.collectionVariables.set(\"customer3_id\", json.customerId);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Actualizar Customer 1",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_valid}}",
+            "type": "text"
+          },
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Juan Pérez Actualizado\",\n  \"numCTA\": \"987654321098\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:56790/api/v1/customers/{{customer1_id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "56790",
+          "path": ["api", "v1", "customers", "{{customer1_id}}"]
+        }
+      }
+    },
+    {
+      "name": "Desactivar Customer 2 (Token válido)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_valid}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:56790/api/v1/customers/{{customer2_id}}/deactivate",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "56790",
+          "path": ["api", "v1", "customers", "{{customer2_id}}", "deactivate"]
+        }
+      }
+    },
+    {
+      "name": "Desactivar Customer 3 (Token sin scope)",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_invalid}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:56790/api/v1/customers/{{customer3_id}}/deactivate",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "56790",
+          "path": ["api", "v1", "customers", "{{customer3_id}}", "deactivate"]
+        }
+      }
+    },
+    {
+      "name": "Activar Customer 3",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{jwt_valid}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:56790/api/v1/customers/{{customer3_id}}/activate",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "56790",
+          "path": ["api", "v1", "customers", "{{customer3_id}}", "activate"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_valid",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLXRlc3Qtd3JpdGVyIiwic2NvcGUiOiJjdXN0b21lcnM6d3JpdGUgY3VzdG9tZXJzOnJlYWQgY3VzdG9tZXJzOnVwZGF0ZSBjdXN0b21lcnM6ZGVhY3RpdmF0ZSBjdXN0b21lcnM6YWN0aXZhdGUiLCJpYXQiOjE2NzI1MzEyMDAsImV4cCI6MjMwMzIyMjQwMH0.Wab16rWdBkU_lh9ui9IomWlosxfSR9i-BuYDpIVyCOs"
+    },
+    {
+      "key": "jwt_invalid",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyLXRlc3Qtd3JpdGVyIiwic2NvcGUiOiJjdXN0b21lcnM6d3JpdGUgY3VzdG9tZXJzOnJlYWQiLCJpYXQiOjE2NzI1MzEyMDAsImV4cCI6MjMwMzIyMjQwMH0.bFDXKVRw6NYR8xzkL89aWVn46RcULPg9_SLxWFP1HXo"
+    }
+  ]
+}
+
