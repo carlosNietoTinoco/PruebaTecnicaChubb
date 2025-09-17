@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.chubbTest.customer.application.repository.CustomerRepository;
+import com.chubbTest.customer.application.validation.factory.ValidationStrategyFactory;
 import com.chubbTest.customer.domain.Customer;
 import com.chubbTest.customer.domain.enums.Country;
 import com.chubbTest.customer.domain.enums.Status;
@@ -20,9 +21,12 @@ import com.chubbTest.customer.domain.exception.InvalidCustomerDataException;
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final ValidationStrategyFactory validationStrategyFactory;
 
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, 
+                           ValidationStrategyFactory validationStrategyFactory) {
         this.customerRepository = customerRepository;
+        this.validationStrategyFactory = validationStrategyFactory;
     }
 
     @Transactional
@@ -131,9 +135,8 @@ public class CustomerService {
     }
 
     private void validateCountrySpecificRules(Customer customer) {
-        if (customer.getCountry() == Country.CHILE && customer.getNumCTA() != null && !customer.getNumCTA().startsWith("003")) {
-            throw new InvalidCustomerDataException("Error de validación: Para el país CHILE, el 'numCTA' debe comenzar con '003'.");
-        }
+        validationStrategyFactory.getStrategy(customer.getCountry())
+                .ifPresent(strategy -> strategy.validate(customer));
     }
 
     private void setCustomerStatusAndDates(Customer customer, Status status, LocalDateTime timestamp) {
