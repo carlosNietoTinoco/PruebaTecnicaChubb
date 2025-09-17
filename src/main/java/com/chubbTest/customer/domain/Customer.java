@@ -137,10 +137,10 @@ public class Customer {
     public String toString() {
         return "Customer{" +
                 "customerId=" + customerId +
-                ", name='" + name + '\'' +
-                ", birthDate=" + birthDate +
+                ", name='[MASKED]'" +
+                ", birthDate='[MASKED]'" +
                 ", gender=" + gender +
-                ", numCTA='" + numCTA + '\'' +
+                ", numCTA='[MASKED]'" +
                 ", status=" + status +
                 ", country=" + country +
                 ", isActive=" + isActive() +
